@@ -82,36 +82,36 @@ object ULID {
   }
 
   def generate(
-      timestampGen: () => Long = timestampGenerator,
-      randomGen: Int => Array[Byte] = randomGenerator
+      timestampGenerator: () => Long = ULID.timestampGenerator,
+      randomGenerator: Int => Array[Byte] = ULID.randomGenerator
   ): ULID = {
-    val timestamp = timestampGen()
+    val timestamp = timestampGenerator()
     checkTimestamp(timestamp)
-    val (random1, random2)   = generateRandom(randomGen)
+    val (random1, random2)   = generateRandom(randomGenerator)
     val mostSignificantBits  = (timestamp << 16) | (random1 >>> 24)
     val leastSignificantBits = (random1 << 40) | random2
     new ULID(mostSignificantBits, leastSignificantBits)
   }
 
   def generateMonotonic(
-      previousID: ULID,
-      timestampGen: () => Long = timestampGenerator,
-      randomGen: Int => Array[Byte] = randomGenerator
+      previousId: ULID,
+      timestampGenerator: () => Long = ULID.timestampGenerator,
+      randomGenerator: Int => Array[Byte] = ULID.randomGenerator
   ): ULID = {
-    val timestamp = timestampGen()
-    if (previousID.toEpochMilliAsLong == timestamp)
-      previousID.increment
+    val timestamp = timestampGenerator()
+    if (previousId.toEpochMilliAsLong == timestamp)
+      previousId.increment
     else
-      generate(() => timestamp, randomGen)
+      generate(() => timestamp, randomGenerator)
   }
 
   def generateStrictlyMonotonic(
-      previousID: ULID,
-      timestamp: () => Long = timestampGenerator,
-      randomGran: Int => Array[Byte] = randomGenerator
+      previousId: ULID,
+      timestampGenerator: () => Long = ULID.timestampGenerator,
+      randomGenerator: Int => Array[Byte] = ULID.randomGenerator
   ): Option[ULID] = {
-    val result = generateMonotonic(previousID, timestamp, randomGran)
-    if (result.compareTo(previousID) < 1)
+    val result = generateMonotonic(previousId, timestampGenerator, randomGenerator)
+    if (result.compareTo(previousId) < 1)
       None
     else
       Some(result)

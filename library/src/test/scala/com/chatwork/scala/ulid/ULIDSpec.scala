@@ -14,6 +14,7 @@ class ULIDSpec extends AnyFreeSpec with Matchers with ScalaCheckDrivenPropertyCh
   "ULID" - {
     "generate" in forAll(ulidGen) { ulid =>
       val str = ulid.asString
+      println(str)
       ULID.parseULID(str).get shouldBe ulid
     }
     "too long ulid string" in {
