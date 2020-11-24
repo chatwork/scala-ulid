@@ -100,6 +100,7 @@ lazy val benchmark = (project in file("benchmark"))
 
 val root = (project in file("."))
   .settings(baseSettings)
+  .settings(deploySettings)
   .settings(
     name := "ulid-root",
     skip in publish := true
