@@ -25,10 +25,7 @@ lazy val baseSettings = Seq(
     Resolver.sonatypeRepo("releases")
   ),
   parallelExecution in Test := false,
-  scalafmtOnCompile in ThisBuild := true,
-  envVars := Map(
-    "AWS_REGION" -> "ap-northeast-1"
-  )
+  scalafmtOnCompile in ThisBuild := true
 )
 
 def crossScalacOptions(scalaVersion: String): Seq[String] =
