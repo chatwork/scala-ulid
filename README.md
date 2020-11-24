@@ -6,6 +6,7 @@ scala-ulid is a library for ULID.
 
 Add the following to your sbt build (2.11.x, 2.12.x, 2.13.x):
 
+```scala
 resolvers += "Sonatype OSS Release Repository" at "https://oss.sonatype.org/content/repositories/releases/"
 
 val version = "..."
@@ -13,6 +14,7 @@ val version = "..."
 libraryDependencies += Seq(
   "com.chatwork" %% "scala-ulid" % version
 )
+```
 
 ## Usage
 
