@@ -1,1 +1,1 @@
-# ulid-scala
+# scala-ulid

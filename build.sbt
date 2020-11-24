@@ -76,7 +76,7 @@ val library = (project in file("library"))
   .settings(baseSettings)
   .settings(deploySettings)
   .settings(
-    name := "ulid",
+    name := "scala-ulid",
     libraryDependencies ++= Seq(
       "org.scalatest"     %% "scalatest"       % "3.2.2"   % Test,
       "org.scalatestplus" %% "scalacheck-1-14" % "3.2.2.0" % Test
@@ -87,7 +87,7 @@ lazy val benchmark = (project in file("benchmark"))
   .settings(baseSettings)
   .settings(deploySettings)
   .settings(
-    name := "akka-persistence-dynamodb-benchmark",
+    name := "scala-ulid-benchmark",
     skip in publish := true,
     libraryDependencies ++= Seq(
       "com.github.f4b6a3"   % "ulid-creator"          % "2.3.3",
@@ -102,7 +102,7 @@ val root = (project in file("."))
   .settings(baseSettings)
   .settings(deploySettings)
   .settings(
-    name := "ulid-root",
+    name := "scala-ulid-root",
     skip in publish := true
   )
   .aggregate(library)
