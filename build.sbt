@@ -5,7 +5,7 @@ val scala212Version = "2.12.10"
 val scala213Version = "2.13.4"
 
 lazy val baseSettings = Seq(
-  organization := "com.github.j5ik2o",
+  organization := "com.chatwork",
   scalaVersion := scala213Version,
   crossScalaVersions := Seq(scala211Version, scala212Version, scala213Version),
   scalacOptions ++= (
@@ -40,7 +40,7 @@ def crossScalacOptions(scalaVersion: String): Seq[String] =
   }
 
 lazy val deploySettings = Seq(
-  sonatypeProfileName := "com.github.j5ik2o",
+  sonatypeProfileName := "com.chatwork",
   publishMavenStyle := true,
   publishArtifact in Test := false,
   pomIncludeRepository := { _ => false },
