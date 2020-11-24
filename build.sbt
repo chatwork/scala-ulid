@@ -89,7 +89,8 @@ lazy val benchmark = (project in file("benchmark"))
     libraryDependencies ++= Seq(
       "com.github.f4b6a3"   % "ulid-creator"          % "2.3.3",
       "de.huxhorn.sulky"    % "de.huxhorn.sulky.ulid" % "8.2.0",
-      "org.wvlet.airframe" %% "airframe-control"      % "20.11.0" // Library for retryable execution
+      "net.petitviolet"    %% "ulid4s"                % "0.4.1",
+      "org.wvlet.airframe" %% "airframe-control"      % "20.11.0"
     )
   )
   .enablePlugins(JmhPlugin)
