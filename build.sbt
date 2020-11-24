@@ -42,17 +42,17 @@ lazy val deploySettings = Seq(
   publishArtifact in Test := false,
   pomIncludeRepository := { _ => false },
   pomExtra := {
-    <url>https://github.com/j5ik2o/akka-persistence-dynamodb</url>
+    <url>https://github.com/chatwork/scala-uild</url>
       <licenses>
         <license>
-          <name>Apache 2</name>
-          <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+          <name>The MIT License</name>
+          <url>http://opensource.org/licenses/MIT</url>
         </license>
       </licenses>
       <scm>
-        <url>git@github.com:j5ik2o/akka-persistence-dynamodb.git</url>
-        <connection>scm:git:github.com/j5ik2o/akka-persistence-dynamodb</connection>
-        <developerConnection>scm:git:git@github.com:j5ik2o/akka-persistence-dynamodb.git</developerConnection>
+        <url>git@github.com:chatwork/scala-ulid.git</url>
+        <connection>scm:git:github.com/chatwork/scala-ulid</connection>
+        <developerConnection>scm:git:git@github.com:chatwork/scala-ulid.git</developerConnection>
       </scm>
       <developers>
         <developer>
