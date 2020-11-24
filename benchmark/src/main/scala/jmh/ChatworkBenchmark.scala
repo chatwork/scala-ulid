@@ -1,5 +1,6 @@
 package jmh
 
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 import com.chatwork.scala.ulid.ULID
@@ -13,12 +14,17 @@ class ChatworkBenchmark {
   var ulid = ULID.generate()
 
   @Benchmark
-  def generate(): Unit = {
+  def generateUUID(): Unit = {
+    UUID.randomUUID()
+  }
+
+  @Benchmark
+  def generateULID(): Unit = {
     ULID.generate()
   }
 
   @Benchmark
-  def increment(): Unit = {
+  def incrementULID(): Unit = {
     ulid = ULID.generateMonotonic(ulid)
   }
 

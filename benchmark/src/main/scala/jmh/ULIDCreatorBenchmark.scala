@@ -1,5 +1,6 @@
 package jmh
 
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 import com.github.f4b6a3.ulid.UlidCreator
@@ -11,7 +12,12 @@ import org.openjdk.jmh.annotations.{Benchmark, BenchmarkMode, Mode, OutputTimeUn
 class ULIDCreatorBenchmark {
 
   @Benchmark
-  def increment(): Unit = {
+  def generateUUID(): Unit = {
+    UUID.randomUUID()
+  }
+
+  @Benchmark
+  def incrementULID(): Unit = {
     UlidCreator.getUlid
   }
 

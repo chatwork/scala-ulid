@@ -1,5 +1,6 @@
 package jmh
 
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 import de.huxhorn.sulky.ulid.ULID
@@ -14,12 +15,17 @@ class SulkyBenchmark {
   var value = ulid.nextValue()
 
   @Benchmark
-  def generate(): Unit = {
+  def generateUUID(): Unit = {
+    UUID.randomUUID()
+  }
+
+  @Benchmark
+  def generateULID(): Unit = {
     ulid.nextValue()
   }
 
   @Benchmark
-  def increment(): Unit = {
+  def incrementULID(): Unit = {
     value = ulid.nextMonotonicValue(value)
   }
 

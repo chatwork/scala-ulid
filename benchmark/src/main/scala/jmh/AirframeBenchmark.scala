@@ -1,5 +1,6 @@
 package jmh
 
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 import org.openjdk.jmh.annotations.{Benchmark, BenchmarkMode, Mode, OutputTimeUnit, Scope, State}
@@ -11,7 +12,12 @@ import wvlet.airframe.control.ULID
 class AirframeBenchmark {
 
   @Benchmark
-  def generate(): Unit = {
+  def generateUUID(): Unit = {
+    UUID.randomUUID()
+  }
+
+  @Benchmark
+  def generateULID(): Unit = {
     ULID.newULID
   }
 
