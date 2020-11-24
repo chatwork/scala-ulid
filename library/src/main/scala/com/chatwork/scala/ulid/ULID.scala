@@ -51,14 +51,15 @@ final case class ULID(mostSignificantBits: Long, leastSignificantBits: Long)
   }
 
   def asString: String = {
-    Seq(
-      internalWriteCrockford(toEpochMilliAsLong, 10),
-      internalWriteCrockford(
-        (mostSignificantBits & 0xffffL) << 24 | leastSignificantBits >>> 40,
-        8
-      ),
-      internalWriteCrockford(leastSignificantBits, 8)
-    ).mkString
+    val sb = new StringBuilder
+    internalWriteCrockford(sb, toEpochMilliAsLong, 10)
+    internalWriteCrockford(
+      sb,
+      (mostSignificantBits & 0xffffL) << 24 | leastSignificantBits >>> 40,
+      8
+    )
+    internalWriteCrockford(sb, leastSignificantBits, 8)
+    sb.result()
   }
 
 }
@@ -177,13 +178,14 @@ object ULID {
   }
 
   private[ulid] def internalWriteCrockford(
+      sb: StringBuilder,
       value: Long,
       count: Int
-  ): String = {
-    (0 until count).map { i =>
+  ): Unit = {
+    (0 until count).foreach { i =>
       val index = ((value >>> ((count - i - 1) * MASK_BITS)) & MASK).asInstanceOf[Int]
-      ENCODING_CHARS(index)
-    }.mkString
+      sb.append(ENCODING_CHARS(index))
+    }
   }
 
   private[ulid] def internalParseCrockford(input: String): Long = {
