@@ -9,6 +9,7 @@ import wvlet.airframe.control.ULID
 @BenchmarkMode(Array(Mode.SampleTime))
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
 class AirframeBenchmark {
+
   @Benchmark
   def generate(): Unit = {
     ULID.newULID

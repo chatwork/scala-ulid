@@ -1,4 +1,4 @@
-package com.github.j5ik2o.ulid
+package com.chatwork.scala.ulid
 
 import org.scalacheck.{Gen, Shrink}
 import org.scalatest.freespec.AnyFreeSpec
@@ -30,7 +30,7 @@ class ULIDSpec extends AnyFreeSpec with Matchers with ScalaCheckDrivenPropertyCh
     "generateMonotonic" in forAll(ulidGen) { ulid =>
       val ulid2 = ULID.generateMonotonic(ulid)
       val ulid3 = ULID.generateMonotonic(ulid2)
-      val ulid4 = ULID.generateMonotonic(ulid2, ulid2.toEpochMilliAsLong)
+      val ulid4 = ULID.generateMonotonic(ulid2, () => ulid2.toEpochMilliAsLong)
 
       ulid should be < (ulid2)
       ulid2 should be < (ulid3)

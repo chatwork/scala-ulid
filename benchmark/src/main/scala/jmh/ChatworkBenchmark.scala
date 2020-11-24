@@ -2,13 +2,14 @@ package jmh
 
 import java.util.concurrent.TimeUnit
 
-import com.github.j5ik2o.ulid.ULID
+import com.chatwork.scala.ulid.ULID
 import org.openjdk.jmh.annotations._
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Array(Mode.SampleTime))
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
-class J5ik2oBenchmark {
+class ChatworkBenchmark {
+
   var ulid = ULID.generate()
 
   @Benchmark

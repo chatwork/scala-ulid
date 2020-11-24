@@ -12,6 +12,7 @@ class SulkyBenchmark {
 
   val ulid  = new ULID()
   var value = ulid.nextValue()
+
   @Benchmark
   def generate(): Unit = {
     ulid.nextValue()

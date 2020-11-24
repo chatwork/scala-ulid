@@ -1,4 +1,4 @@
-package com.github.j5ik2o.ulid
+package com.chatwork.scala.ulid
 
 import java.security.{NoSuchAlgorithmException, SecureRandom}
 import java.time.Instant
@@ -18,11 +18,10 @@ final case class ULID(mostSignificantBits: Long, leastSignificantBits: Long)
     if (lsb != 0xffffffffffffffffL)
       new ULID(mostSignificantBits, lsb + 1)
     else {
-      val msb = mostSignificantBits
-      if ((msb & RANDOM_MSB_MASK) != RANDOM_MSB_MASK)
-        new ULID(msb + 1, 0)
+      if ((mostSignificantBits & RANDOM_MSB_MASK) != RANDOM_MSB_MASK)
+        new ULID(mostSignificantBits + 1, 0)
       else
-        new ULID(msb & TIMESTAMP_MSB_MASK, 0)
+        new ULID(mostSignificantBits & TIMESTAMP_MSB_MASK, 0)
     }
   }
 
@@ -65,19 +64,30 @@ final case class ULID(mostSignificantBits: Long, leastSignificantBits: Long)
 }
 
 object ULID {
-  val defaultRandomGen: SecureRandom =
-    try { SecureRandom.getInstance("NativePRNGNonBlocking") }
-    catch {
-      case _: NoSuchAlgorithmException =>
-        SecureRandom.getInstanceStrong
+
+  val timestampGenerator: () => Long = () => System.currentTimeMillis()
+
+  val randomGenerator: Int => Array[Byte] = {
+    val defaultRandomGen: SecureRandom =
+      try SecureRandom.getInstance("NativePRNGNonBlocking")
+      catch {
+        case _: NoSuchAlgorithmException =>
+          SecureRandom.getInstanceStrong
+      }
+    { args =>
+      val array = new Array[Byte](args)
+      defaultRandomGen.nextBytes(array)
+      array
     }
+  }
 
   def generate(
-      timestamp: Long = System.currentTimeMillis(),
-      randomGen: Random = defaultRandomGen
+      timestampGen: () => Long = timestampGenerator,
+      randomGen: Int => Array[Byte] = randomGenerator
   ): ULID = {
+    val timestamp = timestampGen()
     checkTimestamp(timestamp)
-    val (random1, random2)   = genRandom(randomGen)
+    val (random1, random2)   = generateRandom(randomGen)
     val mostSignificantBits  = (timestamp << 16) | (random1 >>> 24)
     val leastSignificantBits = (random1 << 40) | random2
     new ULID(mostSignificantBits, leastSignificantBits)
@@ -85,19 +95,20 @@ object ULID {
 
   def generateMonotonic(
       previousID: ULID,
-      timestamp: Long = System.currentTimeMillis(),
-      randomGen: Random = defaultRandomGen
+      timestampGen: () => Long = timestampGenerator,
+      randomGen: Int => Array[Byte] = randomGenerator
   ): ULID = {
+    val timestamp = timestampGen()
     if (previousID.toEpochMilliAsLong == timestamp)
       previousID.increment
     else
-      generate(timestamp, randomGen)
+      generate(() => timestamp, randomGen)
   }
 
   def generateStrictlyMonotonic(
       previousID: ULID,
-      timestamp: Long = System.currentTimeMillis(),
-      randomGran: Random = defaultRandomGen
+      timestamp: () => Long = timestampGenerator,
+      randomGran: Int => Array[Byte] = randomGenerator
   ): Option[ULID] = {
     val result = generateMonotonic(previousID, timestamp, randomGran)
     if (result.compareTo(previousID) < 1)
@@ -107,9 +118,8 @@ object ULID {
   }
 
   @inline
-  private def genRandom(randomGen: Random) = {
-    val bytes = new Array[Byte](10)
-    randomGen.nextBytes(bytes)
+  private def generateRandom(randomGen: Int => Array[Byte]): (Long, Long) = {
+    val bytes = randomGen(10)
 
     var random1 = 0L
     var random2 = 0L
@@ -134,9 +144,11 @@ object ULID {
   private val RANDOM_MSB_MASK    = 0xffffL
   private val MASK_BITS          = 5
   private val MASK               = 0x1f
+
   private[ulid] val ENCODING_CHARS =
     Array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
       'J', 'K', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z')
+
   private val DECODING_CHARS = Array( // 0
     -1, -1, -1, -1, -1, -1, -1, -1, // 8
     -1, -1, -1, -1, -1, -1, -1, -1, // 16
@@ -156,6 +168,7 @@ object ULID {
     29, 30, 31)
 
   private[ulid] val TIMESTAMP_OVERFLOW_MASK = 0xffff000000000000L
+
   private def checkTimestamp(timestamp: Long): Unit = {
     if ((timestamp & TIMESTAMP_OVERFLOW_MASK) != 0)
       throw new IllegalArgumentException(
@@ -198,7 +211,9 @@ object ULID {
   def parseULID(ulidString: String): Try[ULID] =
     Try {
       if (ulidString.length != ULID_STRING_LENGTH)
-        throw new IllegalArgumentException("ulidString must be exactly 26 chars long.")
+        throw new IllegalArgumentException(
+          s"ulidString must be exactly ${ULID_STRING_LENGTH} chars long."
+        )
       val timeString = ulidString.substring(0, 10)
       val timestamp  = internalParseCrockford(timeString)
       if ((timestamp & TIMESTAMP_OVERFLOW_MASK) != 0)
