@@ -36,7 +36,7 @@ ULID.fromBytes(bytes).foreach { ulid =>
 
 <table>
 <tr>
-  <th width="10%">-</th><th width="30%">airframe</th><th width="30%">sulky</th><th width="30%">chatwork</th>
+  <th width="10%">-</th><th width="30%">airframe/airframe-control</th><th width="30%">sulky/sulky-ulid</th><th width="30%">chatwork/scala-ulid</th>
 </tr>
 <tr>
   <th>Random number generation</th><td>Calling the Random#nextDouble 16 times</td><td>Calling Random#nextLong twice (upper 48 bits useless random number generation)</td><td>Calling Random#nextBytes(10) only once</td>
