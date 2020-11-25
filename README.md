@@ -34,6 +34,8 @@ ULID.fromBytes(bytes).foreach { ulid =>
 
 ## Benchmark
 
+https://github.com/chatwork/scala-ulid/blob/main/benchmark/src/main/scala/jmh/ULIDBenchmark.scala
+
 <table>
 <tr>
   <th width="10%">-</th><th width="30%">airframe/airframe-control</th><th width="30%">sulky/sulky-ulid</th><th width="30%">chatwork/scala-ulid</th>
