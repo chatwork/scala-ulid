@@ -24,7 +24,8 @@ class ULIDSpec extends AnyFreeSpec with Matchers with ScalaCheckDrivenPropertyCh
       ULID.parseULID(str).isFailure shouldBe true
     }
     "timestamp overflow ulid string" in {
-      val timestamp = ULID.internalWriteCrockford(ULID.TIMESTAMP_OVERFLOW_MASK, 10)
+      val sb        = new StringBuilder()
+      val timestamp = ULID.internalWriteCrockford(sb, ULID.TIMESTAMP_OVERFLOW_MASK, 10)
       val str       = Seq(timestamp, "ZYZJZ9QZ", "ZZ5JP0VK").mkString
       ULID.parseULID(str).isFailure shouldBe true
     }
