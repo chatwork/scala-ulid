@@ -1,16 +1,14 @@
 package com.chatwork.scala.ulid
 
-import java.security.{NoSuchAlgorithmException, SecureRandom}
+import java.security.{ NoSuchAlgorithmException, SecureRandom }
 import java.time.Instant
 import java.util.concurrent.TimeUnit
 
-import scala.concurrent.duration.{Duration, FiniteDuration}
-import scala.util.{Random, Try}
+import scala.concurrent.duration.{ Duration, FiniteDuration }
+import scala.util.Try
 
 @SerialVersionUID(3563159514112487717L)
-final case class ULID(mostSignificantBits: Long, leastSignificantBits: Long)
-    extends Ordered[ULID]
-    with Serializable {
+final case class ULID(mostSignificantBits: Long, leastSignificantBits: Long) extends Ordered[ULID] with Serializable {
   import ULID._
 
   def increment: ULID = {
@@ -147,26 +145,166 @@ object ULID {
   private val MASK               = 0x1f
 
   private[ulid] val ENCODING_CHARS =
-    Array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
-      'J', 'K', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z')
+    Array(
+      '0',
+      '1',
+      '2',
+      '3',
+      '4',
+      '5',
+      '6',
+      '7',
+      '8',
+      '9',
+      'A',
+      'B',
+      'C',
+      'D',
+      'E',
+      'F',
+      'G',
+      'H',
+      'J',
+      'K',
+      'M',
+      'N',
+      'P',
+      'Q',
+      'R',
+      'S',
+      'T',
+      'V',
+      'W',
+      'X',
+      'Y',
+      'Z'
+    )
 
   private val DECODING_CHARS = Array( // 0
-    -1, -1, -1, -1, -1, -1, -1, -1, // 8
-    -1, -1, -1, -1, -1, -1, -1, -1, // 16
-    -1, -1, -1, -1, -1, -1, -1, -1, // 24
-    -1, -1, -1, -1, -1, -1, -1, -1, // 32
-    -1, -1, -1, -1, -1, -1, -1, -1, // 40
-    -1, -1, -1, -1, -1, -1, -1, -1, // 48
-    0, 1, 2, 3, 4, 5, 6, 7,         // 56
-    8, 9, -1, -1, -1, -1, -1, -1,   // 64
-    -1, 10, 11, 12, 13, 14, 15, 16, // 72
-    17, 1, 18, 19, 1, 20, 21, 0,    // 80
-    22, 23, 24, 25, 26, -1, 27, 28, // 88
-    29, 30, 31, -1, -1, -1, -1, -1, // 96
-    -1, 10, 11, 12, 13, 14, 15, 16, // 104
-    17, 1, 18, 19, 1, 20, 21, 0,    // 112
-    22, 23, 24, 25, 26, -1, 27, 28, // 120
-    29, 30, 31)
+    -1,
+    -1,
+    -1,
+    -1,
+    -1,
+    -1,
+    -1,
+    -1, // 8
+    -1,
+    -1,
+    -1,
+    -1,
+    -1,
+    -1,
+    -1,
+    -1, // 16
+    -1,
+    -1,
+    -1,
+    -1,
+    -1,
+    -1,
+    -1,
+    -1, // 24
+    -1,
+    -1,
+    -1,
+    -1,
+    -1,
+    -1,
+    -1,
+    -1, // 32
+    -1,
+    -1,
+    -1,
+    -1,
+    -1,
+    -1,
+    -1,
+    -1, // 40
+    -1,
+    -1,
+    -1,
+    -1,
+    -1,
+    -1,
+    -1,
+    -1, // 48
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7, // 56
+    8,
+    9,
+    -1,
+    -1,
+    -1,
+    -1,
+    -1,
+    -1, // 64
+    -1,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16, // 72
+    17,
+    1,
+    18,
+    19,
+    1,
+    20,
+    21,
+    0, // 80
+    22,
+    23,
+    24,
+    25,
+    26,
+    -1,
+    27,
+    28, // 88
+    29,
+    30,
+    31,
+    -1,
+    -1,
+    -1,
+    -1,
+    -1, // 96
+    -1,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16, // 104
+    17,
+    1,
+    18,
+    19,
+    1,
+    20,
+    21,
+    0, // 112
+    22,
+    23,
+    24,
+    25,
+    26,
+    -1,
+    27,
+    28, // 120
+    29,
+    30,
+    31
+  )
 
   private[ulid] val TIMESTAMP_OVERFLOW_MASK = 0xffff000000000000L
 
@@ -193,16 +331,15 @@ object ULID {
     if (length > 12) {
       throw new IllegalArgumentException("input length must not exceed 12 but was " + length + "!")
     }
-    input.zipWithIndex.foldLeft(0L) {
-      case (result, (current, i)) =>
-        val value =
-          if (current < DECODING_CHARS.length)
-            DECODING_CHARS(current)
-          else
-            -1
-        if (value < 0)
-          throw new IllegalArgumentException("Illegal character '" + current + "'!")
-        result | value.toLong << ((length - 1 - i) * MASK_BITS)
+    input.zipWithIndex.foldLeft(0L) { case (result, (current, i)) =>
+      val value =
+        if (current < DECODING_CHARS.length)
+          DECODING_CHARS(current)
+        else
+          -1
+      if (value < 0)
+        throw new IllegalArgumentException("Illegal character '" + current + "'!")
+      result | value.toLong << ((length - 1 - i) * MASK_BITS)
     }
   }
 
@@ -236,13 +373,11 @@ object ULID {
     Try {
       if (data.length != ULID_BYTES_LENGTH)
         throw new IllegalArgumentException("data must be 16 bytes in length!")
-      val mostSignificantBits = (0 until 8).foldLeft(0L) {
-        case (result, i) =>
-          (result << 8) | (data(i) & 0xff)
+      val mostSignificantBits = (0 until 8).foldLeft(0L) { case (result, i) =>
+        (result << 8) | (data(i) & 0xff)
       }
-      val leastSignificantBits = (8 until 16).foldLeft(0L) {
-        case (result, i) =>
-          (result << 8) | (data(i) & 0xff)
+      val leastSignificantBits = (8 until 16).foldLeft(0L) { case (result, i) =>
+        (result << 8) | (data(i) & 0xff)
       }
       new ULID(mostSignificantBits, leastSignificantBits)
     }

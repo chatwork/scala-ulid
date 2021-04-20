@@ -1,0 +1,18 @@
+name: Scala Steward
+on:
+#  push:
+#    branches:
+#      - main
+  workflow_dispatch:
+  schedule:
+    - cron: '0 * * * *'
+jobs:
+  scala-steward:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: scala-steward-org/scala-steward-action@v2
+        if: ${{ !github.event.repository.fork }}
+        with:
+          github-token: ${{ secrets.CW_SCALA_STEWARD_TOKEN }}
+          author-email: "82752207+j5ik2o-bot[bot]@users.noreply.github.com"
+          author-name: "j5ik2o-bot[bot]"
