@@ -69,7 +69,7 @@ lazy val benchmark = (project in file("benchmark"))
   .settings(baseSettings)
   .settings(
     name := "scala-ulid-benchmark",
-    skip in publish := true,
+    publish / skip := true,
     libraryDependencies ++= Seq(
       ulid.ulidCreator,
       ulid.ulid,
