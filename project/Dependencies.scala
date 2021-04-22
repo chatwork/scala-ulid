@@ -22,7 +22,7 @@ object Dependencies {
     val ulidCreator = "com.github.f4b6a3"   % "ulid-creator"          % "2.3.3"
     val ulid        = "de.huxhorn.sulky"    % "de.huxhorn.sulky.ulid" % "8.2.0"
     val ulid4s      = "net.petitviolet"    %% "ulid4s"                % "0.4.1"
-    val airframe    = "org.wvlet.airframe" %% "airframe-control"      % "20.11.0"
+    val airframe    = "org.wvlet.airframe" %% "airframe-ulid"         % "21.4.1"
   }
 
 }
