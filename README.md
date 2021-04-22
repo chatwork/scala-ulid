@@ -97,6 +97,6 @@ sbt:scala-ulid-root> benchmark/jmh:run -i 5 -wi 5 -f1 -t1
 [info] ULIDBenchmark.ulid4s_ULID_newULID_toString:ulid4s_ULID_newULID_toString·p0.99        sample              6968.000           ns/op
 [info] ULIDBenchmark.ulid4s_ULID_newULID_toString:ulid4s_ULID_newULID_toString·p0.999       sample             74541.696           ns/op
 [info] ULIDBenchmark.ulid4s_ULID_newULID_toString:ulid4s_ULID_newULID_toString·p0.9999      sample            143625.139           ns/op
-[info] ULIDBenchmark.ulid4s_ULID_newULID_toString:ulid4s_ULID_newULID_toString·p1.00     
+[info] ULIDBenchmark.ulid4s_ULID_newULID_toString:ulid4s_ULID_newULID_toString·p1.00        sample           4268032.000           ns/op
 ```
 
