@@ -40,20 +40,63 @@ ULID.fromBytes(bytes).foreach { ulid =>
 
 https://github.com/chatwork/scala-ulid/blob/main/benchmark/src/main/scala/jmh/ULIDBenchmark.scala
 
-<table>
-<tr>
-  <th width="10%">-</th><th width="30%">airframe/airframe-control</th><th width="30%">sulky/sulky-ulid</th><th width="30%">chatwork/scala-ulid</th>
-</tr>
-<tr>
-  <th>Random number generation</th><td>Calling Random#nextDouble 16 times</td><td>Calling Random#nextLong twice (upper 48 bits useless random number generation)</td><td>Calling Random#nextBytes(10) only once</td>
-</tr>
-<tr>
-  <th>Latency 95%tile(nsec)</th><td>1038<br/>(newULIDString=1024nsec)</td><td>524</td><td>460</td>
-</tr>
-<tr>
-   <th>Latency Max(msec)</th><td>1.329<br/>(newULIDString=0.755msec)</td><td>0.721</td><td>0.790</td>
-</tr>
-</table>
+```
+sbt:scala-ulid-root> benchmark/jmh:run -i 5 -wi 5 -f1 -t1
 
-- `java.util.UUID#randomUUID` is 95%tile = 327nsec, max = 0.703msec
+[info] Benchmark                                                                              Mode      Cnt        Score    Error  Units
+[info] ULIDBenchmark.airframe_ULID_newULIDString                                            sample  1093757      227.598 ±  4.123  ns/op
+[info] ULIDBenchmark.airframe_ULID_newULIDString:airframe_ULID_newULIDString·p0.00          sample               160.000           ns/op
+[info] ULIDBenchmark.airframe_ULID_newULIDString:airframe_ULID_newULIDString·p0.50          sample               205.000           ns/op
+[info] ULIDBenchmark.airframe_ULID_newULIDString:airframe_ULID_newULIDString·p0.90          sample               224.000           ns/op
+[info] ULIDBenchmark.airframe_ULID_newULIDString:airframe_ULID_newULIDString·p0.95          sample               236.000           ns/op
+[info] ULIDBenchmark.airframe_ULID_newULIDString:airframe_ULID_newULIDString·p0.99          sample               286.000           ns/op
+[info] ULIDBenchmark.airframe_ULID_newULIDString:airframe_ULID_newULIDString·p0.999         sample              3787.872           ns/op
+[info] ULIDBenchmark.airframe_ULID_newULIDString:airframe_ULID_newULIDString·p0.9999        sample             25696.000           ns/op
+[info] ULIDBenchmark.airframe_ULID_newULIDString:airframe_ULID_newULIDString·p1.00          sample            536576.000           ns/op
+[info] ULIDBenchmark.airframe_ULID_newULID_toString                                         sample  1118731      213.279 ±  2.168  ns/op
+[info] ULIDBenchmark.airframe_ULID_newULID_toString:airframe_ULID_newULID_toString·p0.00    sample               132.000           ns/op
+[info] ULIDBenchmark.airframe_ULID_newULID_toString:airframe_ULID_newULID_toString·p0.50    sample               200.000           ns/op
+[info] ULIDBenchmark.airframe_ULID_newULID_toString:airframe_ULID_newULID_toString·p0.90    sample               217.000           ns/op
+[info] ULIDBenchmark.airframe_ULID_newULID_toString:airframe_ULID_newULID_toString·p0.95    sample               225.000           ns/op
+[info] ULIDBenchmark.airframe_ULID_newULID_toString:airframe_ULID_newULID_toString·p0.99    sample               266.000           ns/op
+[info] ULIDBenchmark.airframe_ULID_newULID_toString:airframe_ULID_newULID_toString·p0.999   sample              1808.000           ns/op
+[info] ULIDBenchmark.airframe_ULID_newULID_toString:airframe_ULID_newULID_toString·p0.9999  sample             14630.317           ns/op
+[info] ULIDBenchmark.airframe_ULID_newULID_toString:airframe_ULID_newULID_toString·p1.00    sample            564224.000           ns/op
+[info] ULIDBenchmark.cwULID_generateULID_asString                                           sample  1824959      437.502 ±  3.722  ns/op
+[info] ULIDBenchmark.cwULID_generateULID_asString:cwULID_generateULID_asString·p0.00        sample               273.000           ns/op
+[info] ULIDBenchmark.cwULID_generateULID_asString:cwULID_generateULID_asString·p0.50        sample               308.000           ns/op
+[info] ULIDBenchmark.cwULID_generateULID_asString:cwULID_generateULID_asString·p0.90        sample               578.000           ns/op
+[info] ULIDBenchmark.cwULID_generateULID_asString:cwULID_generateULID_asString·p0.95        sample               589.000           ns/op
+[info] ULIDBenchmark.cwULID_generateULID_asString:cwULID_generateULID_asString·p0.99        sample               649.000           ns/op
+[info] ULIDBenchmark.cwULID_generateULID_asString:cwULID_generateULID_asString·p0.999       sample              2124.160           ns/op
+[info] ULIDBenchmark.cwULID_generateULID_asString:cwULID_generateULID_asString·p0.9999      sample             86400.000           ns/op
+[info] ULIDBenchmark.cwULID_generateULID_asString:cwULID_generateULID_asString·p1.00        sample            569344.000           ns/op
+[info] ULIDBenchmark.randomUUID_toString                                                    sample  1404265      446.363 ±  6.941  ns/op
+[info] ULIDBenchmark.randomUUID_toString:randomUUID_toString·p0.00                          sample               117.000           ns/op
+[info] ULIDBenchmark.randomUUID_toString:randomUUID_toString·p0.50                          sample               451.000           ns/op
+[info] ULIDBenchmark.randomUUID_toString:randomUUID_toString·p0.90                          sample               502.000           ns/op
+[info] ULIDBenchmark.randomUUID_toString:randomUUID_toString·p0.95                          sample               509.000           ns/op
+[info] ULIDBenchmark.randomUUID_toString:randomUUID_toString·p0.99                          sample               541.000           ns/op
+[info] ULIDBenchmark.randomUUID_toString:randomUUID_toString·p0.999                         sample              2956.000           ns/op
+[info] ULIDBenchmark.randomUUID_toString:randomUUID_toString·p0.9999                        sample            101449.395           ns/op
+[info] ULIDBenchmark.randomUUID_toString:randomUUID_toString·p1.00                          sample           1443840.000           ns/op
+[info] ULIDBenchmark.sUlid_generateULID_toString                                            sample  1250885      664.955 ±  6.563  ns/op
+[info] ULIDBenchmark.sUlid_generateULID_toString:sUlid_generateULID_toString·p0.00          sample               369.000           ns/op
+[info] ULIDBenchmark.sUlid_generateULID_toString:sUlid_generateULID_toString·p0.50          sample               673.000           ns/op
+[info] ULIDBenchmark.sUlid_generateULID_toString:sUlid_generateULID_toString·p0.90          sample               720.000           ns/op
+[info] ULIDBenchmark.sUlid_generateULID_toString:sUlid_generateULID_toString·p0.95          sample               730.000           ns/op
+[info] ULIDBenchmark.sUlid_generateULID_toString:sUlid_generateULID_toString·p0.99          sample               773.000           ns/op
+[info] ULIDBenchmark.sUlid_generateULID_toString:sUlid_generateULID_toString·p0.999         sample              3628.456           ns/op
+[info] ULIDBenchmark.sUlid_generateULID_toString:sUlid_generateULID_toString·p0.9999        sample             89076.659           ns/op
+[info] ULIDBenchmark.sUlid_generateULID_toString:sUlid_generateULID_toString·p1.00          sample           1452032.000           ns/op
+[info] ULIDBenchmark.ulid4s_ULID_newULID_toString                                           sample  1169642     5325.069 ± 26.806  ns/op
+[info] ULIDBenchmark.ulid4s_ULID_newULID_toString:ulid4s_ULID_newULID_toString·p0.00        sample              4416.000           ns/op
+[info] ULIDBenchmark.ulid4s_ULID_newULID_toString:ulid4s_ULID_newULID_toString·p0.50        sample              5152.000           ns/op
+[info] ULIDBenchmark.ulid4s_ULID_newULID_toString:ulid4s_ULID_newULID_toString·p0.90        sample              5584.000           ns/op
+[info] ULIDBenchmark.ulid4s_ULID_newULID_toString:ulid4s_ULID_newULID_toString·p0.95        sample              5632.000           ns/op
+[info] ULIDBenchmark.ulid4s_ULID_newULID_toString:ulid4s_ULID_newULID_toString·p0.99        sample              6968.000           ns/op
+[info] ULIDBenchmark.ulid4s_ULID_newULID_toString:ulid4s_ULID_newULID_toString·p0.999       sample             74541.696           ns/op
+[info] ULIDBenchmark.ulid4s_ULID_newULID_toString:ulid4s_ULID_newULID_toString·p0.9999      sample            143625.139           ns/op
+[info] ULIDBenchmark.ulid4s_ULID_newULID_toString:ulid4s_ULID_newULID_toString·p1.00     
+```
 
