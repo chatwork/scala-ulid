@@ -68,14 +68,10 @@ jobs:
     if: github.event_name == 'pull_request'
     needs: test
     steps:
-      - name: labeler
-        uses: actions/labeler@v3
-        with:
-          repo-token: "${{ secrets.CW_SCALA_STEWARD_TOKEN }}"
       - name: automerge
         uses: pascalgn/automerge-action@v0.13.1
         env:
           GITHUB_TOKEN: "${{ secrets.CW_SCALA_STEWARD_TOKEN }}"
-          MERGE_LABELS: "automerge"
+          MERGE_LABELS: ""
           MERGE_METHOD: "rebase"
           MERGE_FILTER_AUTHOR: "cw-scala-steward"
