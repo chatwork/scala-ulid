@@ -69,7 +69,7 @@ jobs:
     needs: test
     steps:
       - name: automerge
-        uses: pascalgn/automerge-action@v0.13.1
+        uses: pascalgn/automerge-action@v0.14.1
         env:
           GITHUB_TOKEN: "${{ secrets.CW_SCALA_STEWARD_TOKEN }}"
           MERGE_LABELS: ""
